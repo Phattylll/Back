@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  chillmeta-db:
+    container_name: chillmeta-db
+    image: postgres:14-alpine
+    ports:
+      - 7503:5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      
+    environment:
+      - POSTGRES_PASSWORD=28yxrFXLrd6btWtc
+      - POSTGRES_USER=pg
+      - POSTGRES_DB=chillmeta
+    restart: unless-stopped
+
+  chillmeta-app:
+    container_name: chillmeta-backend
+    image: chillmeta-backend
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 7504:3000
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Bangkok
+      - POSTGRES_USER=pg
+      - POSTGRES_PASSWORD=28yxrFXLrd6btWtc
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=chillmeta-db
+      - POSTPOSTGRES_DBGRES_DB=chillmeta
+      - MODEL_API="http://host.docker.internal"
+    volumes:
+      - /home/chillmate/Desktop/mount_chillmate:/usr/src/app/asset/img
+
+volumes:
+  pg-data:
+  chillmeta-app:
